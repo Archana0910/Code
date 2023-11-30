@@ -1,0 +1,66 @@
+MainActivity:
+package com.mphasis.broadcast_receiver
+
+import android.content.Intent
+import android.content.IntentFilter
+import androidx.appcompat.app.AppCompatActivity
+import android.os.Bundle
+
+class MainActivity : AppCompatActivity() {
+        lateinit var receiver: AirplaneModeChangedReceiver
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+        receiver = AirplaneModeChangedReceiver()
+        IntentFilter(Intent.ACTION_AIRPLANE_MODE_CHANGED).also {
+            registerReceiver(receiver, it)
+        }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        unregisterReceiver(receiver)
+    }
+}
+
+
+activity_main:
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Hello World!"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+
+
+AirplaneModeChangedReceiver:
+package com.mphasis.broadcast_receiver
+
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.widget.Toast
+
+class AirplaneModeChangedReceiver : BroadcastReceiver(){
+
+    override fun onReceive(context: Context?, intent: Intent?) {
+        val isAirplaneModeEnabled = intent?.getBooleanExtra("state",false) ?: return
+        if(isAirplaneModeEnabled){
+            Toast.makeText(context, "Airplane mode is enabled",Toast.LENGTH_LONG).show()
+        }else{
+            Toast.makeText(context, "Airplane mode is disabled",Toast.LENGTH_LONG).show()
+        }
+    }
+}
